@@ -1,6 +1,7 @@
 name: Deploy to Netlify
 
-push:
+on:
+  push:
   branches:
     - main
 
