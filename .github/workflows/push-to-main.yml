@@ -1,16 +1,31 @@
-name: Build and Push Docker image to ECR
+name: Build, Test, Lint and Push Docker image to ECR
 
 on:
-   push
-    main
+  push:
+    branches:
+      - main
 
 jobs:
-  build_and_push:
+  build_test_lint_and_push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx
+
+      - name: Run tests
+        run: npm test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -31,4 +46,3 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./cicdtests
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
