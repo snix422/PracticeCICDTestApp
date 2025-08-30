@@ -1,0 +1,21 @@
+name: "CI CHECKS"
+description: "Install dependencies, runs lint, build and tests"
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies
+      run: npm ci
+      shell: bash   
+    
+    - name: Run eslint
+      run: npx eslint .
+      shell: bash
+
+    - name: Run build
+      run: npm run build
+      shell: bash
+
+    - name: Run tests
+      run: npm test
+      shell: bash
+    
